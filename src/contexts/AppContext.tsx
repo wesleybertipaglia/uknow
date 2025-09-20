@@ -16,7 +16,7 @@ interface AppContextType {
   isLoading: boolean;
   login: (email: string, password: string) => boolean;
   logout: () => void;
-  signup: (name: string, email: string, password: string) => boolean;
+  signup: (name: string, email: string, password: string, profilePhoto?: string) => boolean;
 
   // Data
   users: User[];
@@ -74,7 +74,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     router.push('/login');
   };
 
-  const signup = (name: string, email: string, password: string): boolean => {
+  const signup = (name: string, email: string, password: string, profilePhoto?: string): boolean => {
     if (users.some(u => u.email === email)) {
       toast({ variant: "destructive", title: "Signup Failed", description: "An account with this email already exists." });
       return false;
@@ -84,7 +84,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       name,
       email,
       passwordHash: simpleHash(password),
-      profilePhoto: `https://picsum.photos/seed/${Date.now()}/200/200`,
+      profilePhoto: profilePhoto || `https://picsum.photos/seed/${Date.now()}/200/200`,
       bio: '',
       friends: [],
       communities: [],

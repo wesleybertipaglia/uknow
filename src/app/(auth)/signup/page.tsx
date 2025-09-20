@@ -24,11 +24,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { Label } from "@/components/ui/label";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
   password: z.string().min(6, { message: "Password must be at least 6 characters." }),
+  profilePhoto: z.any().optional(),
 });
 
 export default function SignupPage() {
@@ -44,7 +46,16 @@ export default function SignupPage() {
   });
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    signup(values.name, values.email, values.password);
+    const file = values.profilePhoto?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        signup(values.name, values.email, values.password, reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+        signup(values.name, values.email, values.password);
+    }
   };
 
   return (
@@ -97,6 +108,13 @@ export default function SignupPage() {
                 </FormItem>
               )}
             />
+            <FormItem>
+              <Label>Profile Photo (Optional)</Label>
+              <FormControl>
+                <Input type="file" accept="image/*" {...form.register('profilePhoto')} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <Button type="submit" className="w-full">
               Sign Up
             </Button>

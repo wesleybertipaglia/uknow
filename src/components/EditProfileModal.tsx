@@ -25,6 +25,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { Label } from '@/components/ui/label';
 
 interface EditProfileModalProps {
   isOpen: boolean;
@@ -36,7 +37,7 @@ interface EditProfileModalProps {
 const formSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
   bio: z.string().max(160, { message: 'Bio cannot exceed 160 characters.' }).optional(),
-  profilePhoto: z.string().url({ message: 'Please enter a valid URL.' }).optional(),
+  profilePhotoFile: z.any().optional(),
 });
 
 export default function EditProfileModal({ isOpen, onClose, user, onSave }: EditProfileModalProps) {
@@ -45,7 +46,6 @@ export default function EditProfileModal({ isOpen, onClose, user, onSave }: Edit
     defaultValues: {
       name: user.name,
       bio: user.bio,
-      profilePhoto: user.profilePhoto,
     },
   });
 
@@ -54,17 +54,29 @@ export default function EditProfileModal({ isOpen, onClose, user, onSave }: Edit
       form.reset({
         name: user.name,
         bio: user.bio,
-        profilePhoto: user.profilePhoto,
       });
     }
-  }, [user, form]);
+  }, [user, form, isOpen]);
 
   const onSubmit = (values: z.infer<typeof formSchema>) => {
-    onSave({
+    const file = values.profilePhotoFile?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        onSave({
+          name: values.name,
+          bio: values.bio || '',
+          profilePhoto: reader.result as string,
+        });
+      };
+      reader.readAsDataURL(file);
+    } else {
+      onSave({
         name: values.name,
         bio: values.bio || '',
-        profilePhoto: values.profilePhoto || '',
-    });
+        profilePhoto: user.profilePhoto, // Keep original photo if none is uploaded
+      });
+    }
     onClose();
   };
 
@@ -109,19 +121,13 @@ export default function EditProfileModal({ isOpen, onClose, user, onSave }: Edit
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="profilePhoto"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Profile Photo URL</FormLabel>
-                  <FormControl>
-                    <Input placeholder="https://example.com/image.png" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+             <FormItem>
+              <Label>Profile Photo</Label>
+              <FormControl>
+                <Input type="file" accept="image/*" {...form.register('profilePhotoFile')} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
             <DialogFooter>
                <DialogClose asChild>
                 <Button type="button" variant="secondary">
