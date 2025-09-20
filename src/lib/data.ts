@@ -110,6 +110,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     description: 'A passionate community for those who live for hiking, climbing, and exploring mountains. Share tips, trails, and epic stories.',
     coverImage: 'https://picsum.photos/seed/c1/400/200',
     members: ['89634172', '18909893'],
+    ownerId: '89634172'
   },
   {
     id: '60959001',
@@ -117,6 +118,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     description: 'From recipes to restaurant reviews, this is the place for all culinary adventurers to gather and share their foodie finds.',
     coverImage: 'https://picsum.photos/seed/c2/400/200',
     members: ['99865775', '18909893', '64361314', '89634172'],
+    ownerId: '99865775'
   },
   {
     id: '17390639',
@@ -124,6 +126,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     description: 'Cozy spot to discuss novels, recommend reads, and dive into literary debates.',
     coverImage: 'https://picsum.photos/seed/c3/400/200',
     members: ['99865775', '53294960', '89634172'],
+    ownerId: '53294960'
   },
   {
     id: '24244559',
@@ -131,6 +134,7 @@ export const MOCK_COMMUNITIES: Community[] = [
     description: 'Join us if you love to run—whether it’s marathons, sprints, or casual jogs. Share your progress and training tips!',
     coverImage: 'https://picsum.photos/seed/c4/400/200',
     members: ['53294960'],
+    ownerId: '53294960'
   },
   {
     id: '75938844',
@@ -138,5 +142,6 @@ export const MOCK_COMMUNITIES: Community[] = [
     description: 'A community celebrating the art and nostalgia of film photography. Share your shots, tips, and favorite cameras.',
     coverImage: 'https://picsum.photos/seed/c5/400/200',
     members: ['89634172', '18909893'],
+    ownerId: '89634172'
   },
 ];

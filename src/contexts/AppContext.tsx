@@ -35,6 +35,8 @@ interface AppContextType {
   toggleCommunityMembership: (communityId: string) => void;
   updateUser: (updatedUser: User) => void;
   addCommunity: (name: string, description: string, coverImage: string) => void;
+  updateCommunity: (communityId: string, data: { name: string; description: string; coverImage: string }) => void;
+  deleteCommunity: (communityId: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -219,7 +221,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
         name,
         description,
         coverImage,
-        members: [currentUser.id]
+        members: [currentUser.id],
+        ownerId: currentUser.id
     };
     setCommunities(prev => [newCommunity, ...prev]);
     setUsers(prevUsers => prevUsers.map(u => 
@@ -229,7 +232,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     ));
     toast({ title: "Community Created!", description: `"${name}" is now live.` });
   };
+  
+  const updateCommunity = (communityId: string, data: { name: string; description: string; coverImage: string }) => {
+    setCommunities(prev => prev.map(c => c.id === communityId ? { ...c, ...data } : c));
+    toast({ title: "Community Updated!", description: "Your changes have been saved." });
+  };
 
+  const deleteCommunity = (communityId: string) => {
+    // Remove the community itself
+    setCommunities(prev => prev.filter(c => c.id !== communityId));
+    // Remove associated posts
+    setPosts(prev => prev.filter(p => p.communityId !== communityId));
+    // Remove from users' community lists
+    setUsers(prevUsers => prevUsers.map(u => ({
+      ...u,
+      communities: u.communities.filter(id => id !== communityId)
+    })));
+    toast({ title: "Community Deleted", variant: "destructive" });
+    router.push('/communities');
+  };
 
   const value = {
     currentUser,
@@ -248,7 +269,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     toggleFriend,
     toggleCommunityMembership,
     updateUser,
-    addCommunity
+    addCommunity,
+    updateCommunity,
+    deleteCommunity
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

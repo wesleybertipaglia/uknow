@@ -33,4 +33,5 @@ export interface Community {
   description: string;
   coverImage: string;
   members: string[]; // Array of user IDs
+  ownerId: string; // ID of the user who owns the community
 }
