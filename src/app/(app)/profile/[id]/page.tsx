@@ -113,18 +113,20 @@ export default function ProfilePage() {
             {userCommunities.length > 0 ? (
                 <div className="space-y-3">
                 {userCommunities.map(community => (
-                    <Card key={community.id} className="shadow-sm">
-                        <CardContent className="p-3 flex items-center gap-4">
-                            <Avatar className="rounded-md">
-                                <AvatarImage src={community.coverImage} alt={community.name} />
-                                <AvatarFallback>{community.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                                <p className="font-semibold">{community.name}</p>
-                                <p className="text-sm text-muted-foreground">{community.members.length} members</p>
-                            </div>
-                        </CardContent>
-                    </Card>
+                     <Link href={`/community/${community.id}`} key={community.id}>
+                        <Card className="shadow-sm hover:shadow-md transition-shadow">
+                            <CardContent className="p-3 flex items-center gap-4">
+                                <Avatar className="rounded-md">
+                                    <AvatarImage src={community.coverImage} alt={community.name} />
+                                    <AvatarFallback>{community.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p className="font-semibold">{community.name}</p>
+                                    <p className="text-sm text-muted-foreground">{community.members.length} members</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    </Link>
                 ))}
                 </div>
             ) : (
