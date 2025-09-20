@@ -24,8 +24,8 @@ export default function CreatePost({ communityId }: CreatePostProps) {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) { // ~5MB limit
-        alert("File size should not exceed 5MB.");
+      if (file.size > 1 * 1024 * 1024) { // ~1MB limit
+        alert("File size should not exceed 1MB.");
         return;
       }
       if (!['image/jpeg', 'image/png'].includes(file.type)) {
