@@ -34,6 +34,7 @@ interface AppContextType {
   toggleFriend: (friendId: string) => void;
   toggleCommunityMembership: (communityId: string) => void;
   updateUser: (updatedUser: User) => void;
+  addCommunity: (name: string, description: string, coverImage: string) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -211,6 +212,25 @@ export function AppProvider({ children }: { children: ReactNode }) {
     }));
   };
 
+  const addCommunity = (name: string, description: string, coverImage: string) => {
+    if (!currentUser) return;
+    const newCommunity: Community = {
+        id: tinid(),
+        name,
+        description,
+        coverImage,
+        members: [currentUser.id]
+    };
+    setCommunities(prev => [newCommunity, ...prev]);
+    setUsers(prevUsers => prevUsers.map(u => 
+        u.id === currentUser.id
+            ? { ...u, communities: [...u.communities, newCommunity.id] }
+            : u
+    ));
+    toast({ title: "Community Created!", description: `"${name}" is now live.` });
+  };
+
+
   const value = {
     currentUser,
     isLoading,
@@ -228,6 +248,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     toggleFriend,
     toggleCommunityMembership,
     updateUser,
+    addCommunity
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
