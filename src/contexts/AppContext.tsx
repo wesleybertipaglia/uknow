@@ -6,9 +6,11 @@ import { useLocalStorage } from '@/hooks/use-local-storage';
 import { MOCK_USERS, MOCK_POSTS, MOCK_COMMUNITIES } from '@/lib/data';
 import type { User, Post, Community, Comment } from '@/lib/types';
 import { useToast } from "@/hooks/use-toast";
+import { Tinid } from "@wesleybertipaglia/tinid";
 
 // Helper for password simulation
 const simpleHash = (str: string) => `hashed_${str}`;
+const tinid = () => Tinid.generate(8, "0123456789");
 
 interface AppContextType {
   // Auth
@@ -82,7 +84,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return false;
     }
     const newUser: User = {
-      id: `user-${Date.now()}`,
+      id: tinid(),
       name,
       email,
       passwordHash: simpleHash(password),
@@ -101,7 +103,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const addPost = (content: string, imageUrl?: string, communityId?: string) => {
     if (!currentUser) return;
     const newPost: Post = {
-      id: `post-${Date.now()}`,
+      id: tinid(),
       authorId: currentUser.id,
       content,
       imageUrl,
@@ -141,7 +143,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const addComment = (postId: string, content: string) => {
     if (!currentUser) return;
     const newComment: Comment = {
-      id: `comment-${Date.now()}`,
+      id: tinid(),
       authorId: currentUser.id,
       content,
       createdAt: new Date().toISOString(),
