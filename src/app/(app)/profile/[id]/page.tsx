@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useAppContext } from '@/contexts/AppContext';
@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import PostCard from '@/components/PostCard';
-import { UserPlus, UserCheck } from 'lucide-react';
+import { UserPlus, UserCheck, Pencil } from 'lucide-react';
+import EditProfileModal from '@/components/EditProfileModal';
 
 export default function ProfilePage() {
   const { id } = useParams();
-  const { users, posts, communities, currentUser, toggleFriend } = useAppContext();
+  const { users, posts, communities, currentUser, toggleFriend, updateUser } = useAppContext();
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const profileUser = users.find(u => u.id === id);
 
@@ -29,6 +31,14 @@ export default function ProfilePage() {
   
   const isOwnProfile = currentUser.id === profileUser.id;
   const isFriend = currentUser.friends.includes(profileUser.id);
+  
+  const handleUpdateUser = (updatedData: {name: string, bio: string, profilePhoto: string}) => {
+    if (!currentUser) return;
+    updateUser({
+      ...currentUser,
+      ...updatedData,
+    });
+  };
 
   return (
     <div className="space-y-6">
@@ -42,7 +52,12 @@ export default function ProfilePage() {
             <h1 className="text-3xl font-bold">{profileUser.name}</h1>
             <p className="text-muted-foreground mt-2">{profileUser.bio || "This user hasn't written a bio yet."}</p>
           </div>
-          {!isOwnProfile && (
+          {isOwnProfile ? (
+             <Button onClick={() => setIsEditModalOpen(true)} variant="outline">
+                <Pencil size={16} className="mr-2" />
+                Edit Profile
+             </Button>
+          ) : (
             <Button onClick={() => toggleFriend(profileUser.id)}>
               {isFriend ? <UserCheck size={16} className="mr-2" /> : <UserPlus size={16} className="mr-2" />}
               {isFriend ? 'Friends' : 'Add Friend'}
@@ -50,6 +65,15 @@ export default function ProfilePage() {
           )}
         </CardContent>
       </Card>
+      
+      {isOwnProfile && currentUser && (
+        <EditProfileModal
+            isOpen={isEditModalOpen}
+            onClose={() => setIsEditModalOpen(false)}
+            user={currentUser}
+            onSave={handleUpdateUser}
+        />
+      )}
 
       <Tabs defaultValue="posts" className="w-full">
         <TabsList className="grid w-full grid-cols-3">
