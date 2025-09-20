@@ -7,19 +7,27 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-export default function CreatePost() {
+interface CreatePostProps {
+    communityId?: string;
+}
+
+export default function CreatePost({ communityId }: CreatePostProps) {
   const { currentUser, addPost } = useAppContext();
   const [content, setContent] = useState('');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (content.trim()) {
-      addPost(content);
+      addPost(content, undefined, communityId);
       setContent('');
     }
   };
   
   if (!currentUser) return null;
+
+  const placeholder = communityId 
+    ? "Post something to the community..." 
+    : `What's on your mind, ${currentUser.name}?`;
 
   return (
     <Card className="mb-6 shadow-md">
@@ -33,7 +41,7 @@ export default function CreatePost() {
             <Textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              placeholder={`What's on your mind, ${currentUser.name}?`}
+              placeholder={placeholder}
               className="flex-1"
             />
           </div>

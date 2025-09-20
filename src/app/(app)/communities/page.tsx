@@ -2,10 +2,11 @@
 
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useAppContext } from '@/contexts/AppContext';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LogIn, LogOut } from 'lucide-react';
+import { LogIn, LogOut, Eye } from 'lucide-react';
 
 export default function CommunitiesPage() {
   const { currentUser, communities, toggleCommunityMembership } = useAppContext();
@@ -34,15 +35,21 @@ export default function CommunitiesPage() {
                   <CardTitle>{community.name}</CardTitle>
                   <CardDescription className="flex-grow">{community.description}</CardDescription>
                 </CardHeader>
-                <CardFooter>
-                  <Button
-                    variant={isMember ? 'outline' : 'default'}
-                    className="w-full"
-                    onClick={() => toggleCommunityMembership(community.id)}
-                  >
-                    {isMember ? <LogOut size={16} className="mr-2" /> : <LogIn size={16} className="mr-2" />}
-                    {isMember ? 'Leave Community' : 'Join Community'}
-                  </Button>
+                <CardFooter className="flex items-center gap-2">
+                    <Button asChild variant="secondary" className="flex-1">
+                        <Link href={`/community/${community.id}`}>
+                            <Eye size={16} className="mr-2" />
+                            View
+                        </Link>
+                    </Button>
+                    <Button
+                        variant={isMember ? 'outline' : 'default'}
+                        className="flex-1"
+                        onClick={() => toggleCommunityMembership(community.id)}
+                    >
+                        {isMember ? <LogOut size={16} className="mr-2" /> : <LogIn size={16} className="mr-2" />}
+                        {isMember ? 'Leave' : 'Join'}
+                    </Button>
                 </CardFooter>
               </Card>
             );

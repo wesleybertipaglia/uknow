@@ -24,7 +24,7 @@ interface AppContextType {
   communities: Community[];
   
   // Data Updaters
-  addPost: (content: string, imageUrl?: string) => void;
+  addPost: (content: string, imageUrl?: string, communityId?: string) => void;
   toggleLike: (postId: string) => void;
   addComment: (postId: string, content: string) => void;
   toggleFriend: (friendId: string) => void;
@@ -96,7 +96,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   };
   
   // Data Methods
-  const addPost = (content: string, imageUrl?: string) => {
+  const addPost = (content: string, imageUrl?: string, communityId?: string) => {
     if (!currentUser) return;
     const newPost: Post = {
       id: `post-${Date.now()}`,
@@ -106,6 +106,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       likes: [],
       comments: [],
       createdAt: new Date().toISOString(),
+      communityId,
     };
     setPosts(prevPosts => [newPost, ...prevPosts]);
   };

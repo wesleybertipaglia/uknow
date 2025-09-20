@@ -13,6 +13,7 @@ export interface Post {
   likes: string[]; // Array of user IDs
   comments: Comment[];
   createdAt: string;
+  communityId?: string; // ID of the community this post belongs to
 }
 
 export interface User {
