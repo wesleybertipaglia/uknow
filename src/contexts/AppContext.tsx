@@ -25,6 +25,8 @@ interface AppContextType {
   
   // Data Updaters
   addPost: (content: string, imageUrl?: string, communityId?: string) => void;
+  updatePost: (postId: string, content: string, imageUrl?: string) => void;
+  deletePost: (postId: string) => void;
   toggleLike: (postId: string) => void;
   addComment: (postId: string, content: string) => void;
   toggleFriend: (friendId: string) => void;
@@ -109,6 +111,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       communityId,
     };
     setPosts(prevPosts => [newPost, ...prevPosts]);
+  };
+  
+  const updatePost = (postId: string, content: string, imageUrl?: string) => {
+    setPosts(prevPosts => prevPosts.map(p => 
+      p.id === postId ? { ...p, content, imageUrl: imageUrl !== undefined ? imageUrl : p.imageUrl } : p
+    ));
+  };
+  
+  const deletePost = (postId: string) => {
+    setPosts(prevPosts => prevPosts.filter(p => p.id !== postId));
   };
 
   const toggleLike = (postId: string) => {
@@ -207,6 +219,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
     posts,
     communities,
     addPost,
+    updatePost,
+    deletePost,
     toggleLike,
     addComment,
     toggleFriend,
